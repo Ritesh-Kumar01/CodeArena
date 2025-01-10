@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/database.js'; // Import MongoDB connection file
+import userRouter from './routes/user/userRoutes.js';
 
 dotenv.config();
 
@@ -13,6 +14,9 @@ app.use(cors());
 
 // MongoDB Connection
 connectDB();
+
+// Routes
+app.use('/api/user', userRouter); 
 
 // Test route
 app.get('/', (req, res) => {
