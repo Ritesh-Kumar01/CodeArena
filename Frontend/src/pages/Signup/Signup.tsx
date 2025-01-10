@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
+import axios from "axios";
 
 interface FormData {
   fullname: string;
@@ -26,6 +27,8 @@ const Signup: React.FC = () => {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -59,19 +62,29 @@ const Signup: React.FC = () => {
     return valid;
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (validateForm()) {
-      alert(
-        `Welcome, ${formData.fullname}! But currently we are not taking new registration. Thanks for your interest.`
-      );
+      try {
+        const response = await axios.post("http://localhost:5000/api/user/register", formData);
+        console.log(response.data); // Handle the response as needed
 
-      setFormData({
-        fullname: "",
-        email: "",
-        password: "",
-      });
+        alert(`Welcome, ${formData.fullname}! You have successfully registered.`);
+
+        // Reset form fields
+        setFormData({
+          fullname: "",
+          email: "",
+          password: "",
+        });
+
+        navigate("/signin"); 
+
+      } catch (error) {
+        console.error("There was an error registering the user!", error);
+        alert("Registration failed. Please try again.");
+      }
     }
   };
 

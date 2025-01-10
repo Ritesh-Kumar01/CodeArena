@@ -1,13 +1,15 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from './../models/user.model.js';
+import User from './../../models/user.model.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 // Register User
 export const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  console.log(req.body);
+  
+  const { fullname, email, password } = req.body;
 
   try {
     // Check if the user already exists
@@ -21,10 +23,9 @@ export const registerUser = async (req, res) => {
 
     // Create a new user
     const newUser = new User({
-      name,
+      fullname,
       email,
-      password: hashedPassword,
-      role: 'user', // Default role is 'user'
+      password: hashedPassword
     });
 
     // Save the new user to the database
@@ -43,6 +44,8 @@ export const registerUser = async (req, res) => {
 
 // Login User
 export const loginUser = async (req, res) => {
+  console.log(req.body);
+  
   const { email, password } = req.body;
 
   try {
@@ -86,7 +89,7 @@ export const getUserProfile = async (req, res) => {
 
 // Edit User Profile
 export const editUserProfile = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { fullname, email } = req.body;
 
   try {
     const user = await User.findById(req.user.userId);
@@ -95,13 +98,8 @@ export const editUserProfile = async (req, res) => {
     }
 
     // Update fields
-    user.name = name || user.name; // Update name if provided
+    user.fullname = fullname || user.fullname; // Update name if provided
     user.email = email || user.email; // Update email if provided
-    if (password) {
-      user.password = await bcrypt.hash(password, 10); // Hash new password if provided
-    }
-    user.role = role || user.role; // Update role if provided
-
     await user.save(); // Save the updated user data
 
     res.json({ message: 'Profile updated successfully' });

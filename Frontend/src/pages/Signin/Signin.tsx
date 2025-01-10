@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState,useEffect } from "react";
+import { Link,useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
+import axios from "axios";
 
 const Signin: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,16 @@ const Signin: React.FC = () => {
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/profile");
+    }
+  }, [navigate]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,20 +51,31 @@ const Signin: React.FC = () => {
     return valid;
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
     if (validateForm()) {
-      alert(
-        `Currently the website is under development, so you cannot login.`
-      );
+      try {
+        const response = await axios.post("http://localhost:5000/api/user/login", formData);
+        
+        localStorage.setItem("token", response.data.token);
+  
+        // Reset form after successful login
+        setFormData({
+          email: "",
+          password: "",
+        });
 
-      setFormData({
-        email: "",
-        password: "",
-      });
+        navigate("/");
+
+      } catch (error: any) {
+        console.error("There was an error logging in the user!", error);
+        const errMessage = error.response?.data?.message || "An error occurred. Please try again.";
+        alert(errMessage);
+      }
     }
   };
+  
 
   return (
     <div className="h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 flex items-center justify-center">
