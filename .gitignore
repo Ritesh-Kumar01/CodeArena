@@ -33,6 +33,7 @@ yarn-error.log*
 *.swn
 *.bak
 
+
 # OS generated files
 .DS_Store
 .DS_Store?
@@ -48,3 +49,4 @@ docker-compose.override.yml
 # Temporary files
 *.tmp
 *.temp
+File_Structure.txt

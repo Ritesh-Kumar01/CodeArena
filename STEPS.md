@@ -1,7 +1,7 @@
 # Project Setup
 - [X] Initialize Git repository ✅
-- [ ] Create project structure (frontend/backend separation)
-- [ ] Set up MongoDB database
+- [X] Create project structure (frontend/backend separation) ✅
+- [X] Set up MongoDB database ✅
 - [ ] Configure Docker environment
 
 # Authentication System
