@@ -34,7 +34,9 @@ const Signin: React.FC = () => {
 
   const validateForm = () => {
     let valid = true;
-    const newErrors: { [key: string]: string } = {};
+    // const newErrors: { [key: string]: string } = {};
+    const newErrors: { email: string; password: string; } = { email: "", password: "" };
+
 
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!formData.email || !emailPattern.test(formData.email)) {

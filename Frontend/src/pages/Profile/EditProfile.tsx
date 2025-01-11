@@ -38,7 +38,9 @@ const EditProfile: React.FC = () => {
 
   const validateForm = () => {
     let valid = true;
-    const newErrors: { [key: string]: string } = {};
+    // const newErrors: { [key: string]: string } = {};
+    const newErrors: { fullname: string; email: string } = { fullname: "", email: "" };
+
 
     if (!formData.fullname) {
       newErrors.fullname = "Name is required";

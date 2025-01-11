@@ -61,6 +61,11 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
+            <Link to="/problems" className="font-semibold text-white hover:text-gray-300 transition-all">
+              Problems
+            </Link>
+          </li>
+          <li>
             <Link to="/contests" className="font-semibold text-white hover:text-gray-300 transition-all">
               Contests
             </Link>

@@ -19,3 +19,21 @@ export const authMiddleware = (req, res, next) => {
     return res.status(401).json({ message: 'Token is not valid' });
   }
 };
+
+
+export const authenticateUser = async (req, res, next) => {
+  try {
+    const token = req.header("Authorization").replace("Bearer ", "");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded._id);
+
+    if (!user) {
+      return res.status(401).json({ message: "Authentication failed" });
+    }
+
+    req.user = user; // Attach user to the request
+    next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};

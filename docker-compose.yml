@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend  # Adjust this path if needed
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend  # Adjust this path if needed
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    environment:
+      - PORT=5000
+
+networks:
+  app-network:
+    driver: bridge

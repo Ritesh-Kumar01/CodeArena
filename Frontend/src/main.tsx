@@ -10,6 +10,9 @@ import Contests from './pages/Contests/Contests';
 import CodeEditor from './pages/CodeEditor/CodeEditor';
 import Profile from './pages/Profile/Profile';
 import EditProfile from './pages/Profile/EditProfile';
+import Problems from './pages/Problems/Problems';
+import CreateProblem from './pages/Problems/CreateProblem';
+import EditProblem from './pages/Problems/EditProblem';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -22,7 +25,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/" element={<LandingPage />} />
-        <Route path="/editor" element={<CodeEditor />} />
+        <Route path="/editor/:id" element={<CodeEditor />} />
+        <Route path="/edit-problem/:id" element={<EditProblem />} />
+        <Route path="/problems" element={<Problems />} />
+        <Route path="/create-problem" element={<CreateProblem />} />
       </Routes>
     </Router>
   </React.StrictMode>
