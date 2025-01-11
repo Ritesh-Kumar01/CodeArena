@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import Navbar from "../../components/common/Navbar";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import DashboardLayout from "../../components/common/DashboardLayout";
 
 const CodeEditor: React.FC = () => {
   const { id } = useParams(); // Get problem ID from URL
@@ -79,90 +79,105 @@ const CodeEditor: React.FC = () => {
   if (!problem) return <div>Loading...</div>;
 
   return (
+    <DashboardLayout>
     <div className="h-screen flex flex-col bg-gray-900 text-white">
-      <div className="py-8 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-lg">
-        <Navbar />
-      </div>
 
-      <div className="flex flex-grow overflow-hidden flex-col lg:flex-row">
-        <div className="w-full lg:w-1/2 p-4 overflow-y-auto bg-gray-100 border-b lg:border-b-0 lg:border-r border-gray-700">
-          <h3 className="text-lg text-gray-900 font-semibold">{problem.title}</h3>
+<div className="flex flex-grow overflow-hidden flex-col lg:flex-row">
+  <div className="w-full lg:w-1/2 p-4 overflow-y-auto bg-gray-900 border-b lg:border-b-0 lg:border-r border-gray-700">
+    <h3 className="text-lg text-gray-900 font-semibold">{problem.title}</h3>
 
-          <ReactMarkdown
-            children={problem.description}
-            remarkPlugins={[remarkGfm]}
-            className="prose"
-          />
+    <ReactMarkdown
+      children={problem.description}
+      remarkPlugins={[remarkGfm]}
+      className="prose prose-invert"
+    />
 
-          <div className="bg-gray-700 p-6 rounded-md">
-            <h3 className="text-lg font-semibold">Test Cases</h3>
-            {problem.testCases.map((testCase: any, index: number) => (
-              <div key={index} className="mt-2">
-                <h4 className="font-medium">Test Case {index + 1}</h4>
-                <p><strong>Input:</strong> {testCase.input}</p>
-                <p><strong>Output:</strong> {testCase.output}</p>
-              </div>
-            ))}
-          </div>
+    <div className="bg-gray-700 p-6 rounded-md">
+      <h3 className="text-lg font-semibold">Test Cases</h3>
+      {problem.testCases.map((testCase: any, index: number) => (
+        <div key={index} className="mt-2">
+          <h4 className="font-medium">Test Case {index + 1}</h4>
+          <p><strong>Input:</strong> {testCase.input}</p>
+          <p><strong>Output:</strong> {testCase.output}</p>
         </div>
+      ))}
+    </div>
+  </div>
 
-        <div className="w-full lg:w-1/2 p-4 flex flex-col">
-          <div className="flex items-center justify-between mb-4">
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value)}
-              className="p-2 rounded border border-gray-700 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="javascript">JavaScript</option>
-              <option value="python">Python</option>
-              <option value="java">Java</option>
-              <option value="c">C</option>
-              <option value="cpp">C++</option>
-            </select>
-            <div className="space-x-4">
-              <button
-                onClick={handleRun}
-                className={`px-4 py-2 ${isRunning ? 'bg-gray-600' : 'bg-blue-600'} text-white rounded hover:bg-blue-700`}
-                disabled={isRunning} // Disable button when running
-              >
-                {isRunning ? "Running..." : "Run"}
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-
-          {executionError && (
-            <div className="bg-red-600 p-4 rounded-md mb-4">
-              <p className="text-white">{executionError}</p>
-            </div>
-          )}
-
-          {executionOutput && (
-            <div className="bg-green-600 p-4 rounded-md mb-4">
-              <p className="text-white">{executionOutput}</p>
-            </div>
-          )}
-
-          <div className="flex-grow border border-gray-700 rounded overflow-hidden">
-            <MonacoEditor
-              height="100%"
-              language={language}
-              value={code}
-              onChange={(value) => setCode(value || "")}
-              theme="vs-dark"
-              options={{
-                fontSize: 24,
-              }}
-            />
-          </div>
-        </div>
+  <div className="w-full lg:w-1/2 p-4 flex flex-col">
+    <div className="flex items-center justify-between mb-4">
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        className="p-2 rounded border border-gray-700 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+      >
+        <option value="javascript">JavaScript</option>
+        <option value="python">Python</option>
+        <option value="java">Java</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+      </select>
+      <div className="space-x-4">
+        <button
+          onClick={handleRun}
+          className={`px-4 py-2 ${isRunning ? 'bg-gray-600' : 'bg-blue-600'} text-white rounded hover:bg-blue-700`}
+          disabled={isRunning} // Disable button when running
+        >
+          {isRunning ? "Running..." : "Run"}
+        </button>
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        >
+          Submit
+        </button>
       </div>
     </div>
+
+
+<div className="flex-grow border border-gray-700 rounded overflow-hidden">
+      <MonacoEditor
+        height="100%"
+        language={language}
+        value={code}
+        onChange={(value) => setCode(value || "")}
+        theme="vs-dark"
+        options={{
+          fontSize: 24,
+          lineNumbersMinChars: 2,
+        }}
+      />
+    </div>
+    <div className="flex-grow border m-5 p-5 min-h-[100px] border-gray-700 rounded overflow-hidden">
+    <h3 className="text-lg text-gray-100 font-semibold px-2 mb-2 py-2">
+      Results : 
+    </h3>
+      
+    {executionError && (
+      <div className="bg-red-600 p-4 rounded-md mb-4">
+        <p className="text-white">{executionError}</p>
+      </div>
+    )}
+
+    {executionOutput && (
+      <div className="bg-green-600 p-4 rounded-md mb-4">
+        <p className="text-white">{executionOutput}</p>
+      </div>
+    )}
+
+    {!executionOutput && !executionError && (
+      <div className="bg-gray-700 p-4 rounded-md mb-4">
+        <p className="text-white">No results to display.</p>
+      </div>
+    )}
+
+    </div>
+  </div>
+</div>
+</div>
+
+    </DashboardLayout>
+
   );
 };
 

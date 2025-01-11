@@ -5,6 +5,8 @@ import connectDB from './config/database.js'; // Import MongoDB connection file
 import userRouter from './routes/user/userRoutes.js';
 import problemRouter from './routes/problems/problemsRoute.js';
 import codeRouter from './routes/code_execute/code_execute.js';
+import contestRouter from './routes/contests/contestRouter.js';
+
 dotenv.config();
 
 const app = express();
@@ -20,6 +22,7 @@ connectDB();
 app.use('/api/user', userRouter); 
 app.use('/api/problems', problemRouter); 
 app.use('/api/code', codeRouter); 
+app.use('/api/contests', contestRouter); 
 
 // Test route
 app.get('/', (req, res) => {

@@ -1,134 +1,173 @@
-import React, { useState } from "react";
-import QRCode from "react-qr-code";
-import Navbar from "../../components/common/Navbar";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { 
+  FaCalendarAlt, 
+  FaClock, 
+  FaUsers, 
+  FaChevronRight, 
+  FaSpinner 
+} from 'react-icons/fa';
+import DashboardLayout from '../../components/common/DashboardLayout';
 
-const contestsData = [
-  {
-    id: 1,
-    name: "Code Master Challenge",
-    desc: "A thrilling coding contest to test your skills.",
-    image: "https://via.placeholder.com/150",
-    startTime: "2025-01-20 10:00 AM",
-    prizes: "$1000",
-    qrCode: "https://codearena.com/register/1",
-  },
-  {
-    id: 2,
-    name: "Hackathon Blitz",
-    desc: "Show your hacking prowess in this 24-hour event.",
-    image: "https://via.placeholder.com/150",
-    startTime: "2023-01-22 09:00 AM",
-    prizes: "$1500",
-    qrCode: "https://codearena.com/register/2",
-  },
-  {
-    id: 3,
-    name: "Hackathon Blitz",
-    desc: "Show your hacking prowess in this 24-hour event.",
-    image: "https://via.placeholder.com/150",
-    startTime: "2024-01-22 09:00 AM",
-    prizes: "$1500",
-    qrCode: "https://codearena.com/register/2",
-  },
-  {
-    id: 4,
-    name: "Hackathon Blitz",
-    desc: "Show your hacking prowess in this 24-hour event.",
-    image: "https://via.placeholder.com/150",
-    startTime: "2025-01-22 09:00 AM",
-    prizes: "$1500",
-    qrCode: "https://codearena.com/register/2",
-  },
-  // More contests...
-];
-
-const Contests: React.FC = () => {
-  const [filter, setFilter] = useState("all");
-
-  const handleFilterChange = (newFilter: string) => {
-    setFilter(newFilter);
-  };
-
-  const filteredContests = contestsData.filter((contest) => {
-    if (filter === "all") return true;
-    const now = new Date();
-    const startTime = new Date(contest.startTime);
-    return filter === "going" ? startTime >= now : startTime < now;
+// Utility functions
+const formatDate = (date) => {
+  return new Date(date).toLocaleString('en-US', {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   });
+};
+
+const getDuration = (startTime, endTime) => {
+  const diff = new Date(endTime) - new Date(startTime);
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours}h ${minutes}m`;
+};
+
+const getStatusStyle = (status) => {
+  const styles = {
+    upcoming: 'bg-blue-500/10 text-blue-500 border-blue-500',
+    ongoing: 'bg-green-500/10 text-green-500 border-green-500',
+    completed: 'bg-gray-500/10 text-gray-500 border-gray-500'
+  };
+  return styles[status] || styles.completed;
+};
+
+// Contest card component
+const ContestCard = ({ contest, onSelect }) => (
+  <div
+    onClick={() => onSelect(contest._id)}
+    className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-6 hover:bg-gray-800/70 transition-all cursor-pointer"
+  >
+    <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+      <div className="flex-1 space-y-4">
+        <h2 className="text-xl font-semibold text-white">{contest.title}</h2>
+        <p className="text-gray-300 line-clamp-2">{contest.description}</p>
+        
+        <div className="flex flex-wrap gap-4 text-sm text-gray-300">
+          <div className="flex items-center gap-2">
+            <FaCalendarAlt className="w-4 h-4" />
+            <span>Start: {formatDate(contest.startTime)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FaClock className="w-4 h-4" />
+            <span>Duration: {getDuration(contest.startTime, contest.endTime)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FaUsers className="w-4 h-4" />
+            <span>{contest.participants.length} Participants</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusStyle(contest.status)}`}>
+          {contest.status.charAt(0).toUpperCase() + contest.status.slice(1)}
+        </span>
+        <div className="flex items-center">
+          <span className="text-gray-300 mr-2">{contest.problems.length} Problems</span>
+          <FaChevronRight className="w-5 h-5 text-gray-300" />
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// Empty state component
+const EmptyState = ({ onCreate }) => (
+  <div className="text-center py-12">
+    <p className="text-gray-300 text-lg">No contests available</p>
+    <button
+      onClick={onCreate}
+      className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+    >
+      Create Your First Contest
+    </button>
+  </div>
+);
+
+// Main Contests component
+const Contests = () => {
+  const [contests, setContests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchContests = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:5000/api/contests", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log(response.data?.contests);
+        
+        setContests(response.data?.contests || []);
+        setError("");
+      } catch (err) {
+        const errorMessage = err.response?.data?.message || err.message || "Failed to fetch contests";
+        setError(errorMessage);
+        console.error('Error fetching contests:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchContests();
+  }, []);
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-screen">
+          <FaSpinner className="w-12 h-12 text-indigo-500 animate-spin" />
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
-    <>
-    <Navbar/>
-    <div className="py-20 bg-gradient-to-br from-purple-950 via-slate-950 to-indigo-950">
-        <div className="container mx-auto">
-
-        </div>
-    </div>
-    <div className="bg-purple-100">
-    <div className=" container mx-auto">
-      {/* Breadcrumb Section */}
-      
-    <div className="relative bg-gradient-to-r from-purple-600 to-indigo-600 text-white p-6 rounded-lg shadow-md mb-6">
-        <h1 className="text-3xl font-bold mb-2">Contests</h1>
-        <p className="text-sm">Browse ongoing and expired contests. Filter by status and register for your favorite contests.</p>
-      </div>
-
-      {/* Filter Navbar */}
-      <div className="flex justify-between items-center mb-6">
-        <nav className="flex gap-4">
-          <button
-            className={`px-4 py-2 rounded-lg font-semibold ${filter === "all" ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-800"}`}
-            onClick={() => handleFilterChange("all")}
-          >
-            All
-          </button>
-          <button
-            className={`px-4 py-2 rounded-lg font-semibold ${filter === "going" ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-800"}`}
-            onClick={() => handleFilterChange("going")}
-          >
-            Ongoing
-          </button>
-          <button
-            className={`px-4 py-2 rounded-lg font-semibold ${filter === "expired" ? "bg-indigo-500 text-white" : "bg-gray-200 text-gray-800"}`}
-            onClick={() => handleFilterChange("expired")}
-          >
-            Expired
-          </button>
-        </nav>
-        <button className="px-6 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700">Create Contest</button>
-      </div>
-
-      {/* Contests Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-6">
-        {filteredContests.map((contest) => (
-          <div
-            key={contest.id}
-            className="border border-gray-300 rounded-lg p-4 shadow-md bg-white flex flex-col justify-between"
-          >
-            {/* Contest Info */}
-            <div className="flex-grow">
-              <img src={contest.image} alt={contest.name} className="w-full h-32 object-cover rounded-md mb-4" />
-              <h2 className="text-xl font-bold mb-2">{contest.name}</h2>
-              <p className="text-sm text-gray-600 mb-2">{contest.desc}</p>
-              <p className="text-sm font-semibold mb-2">Start Time: {contest.startTime}</p>
-              <p className="text-sm font-semibold">Prizes: {contest.prizes}</p>
-            </div>
-
-            {/* QR Code and Register Button */}
-            <div className="flex items-center justify-between mt-4">
-              <QRCode value={contest.qrCode} size={64} />
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-lg hover:bg-indigo-700">
-                Register Now
-              </button>
-            </div>
+    <DashboardLayout>
+      <div className="min-h-screen bg-gray-900">
+        <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">Contests</h1>
+            <button
+              onClick={() => navigate("/create-contest")}
+              className="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors duration-200"
+            >
+              Create Contest
+            </button>
           </div>
-        ))}
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500 rounded-lg">
+              <p className="text-red-500">{error}</p>
+            </div>
+          )}
+
+          <div className="space-y-4">
+            {contests.length > 0 ? (
+              contests.map((contest) => (
+                <ContestCard
+                  key={contest._id}
+                  contest={contest}
+                  onSelect={(id) => navigate(`/contests/${id}`)}
+                />
+              ))
+            ) : (
+              <EmptyState onCreate={() => navigate("/create-contest")} />
+            )}
+          </div>
+        </div>
       </div>
-    </div>
-    </div>
-    
-    </>
-    
+    </DashboardLayout>
   );
 };
 

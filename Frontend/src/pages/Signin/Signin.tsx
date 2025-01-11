@@ -68,7 +68,7 @@ const Signin: React.FC = () => {
           password: "",
         });
 
-        navigate("/");
+        navigate("/dashboard");
 
       } catch (error: any) {
         console.error("There was an error logging in the user!", error);
