@@ -135,7 +135,7 @@ export const updateContest = async (req, res) => {
     }
 
     // Check if user is the creator
-    if (contest.createdBy.toString() !== req.user._id.toString()) {
+    if (contest.createdBy.toString() !== req.user.userId.toString()) {
       return res.status(StatusCodes.FORBIDDEN).json({
         message: 'Not authorized to update this contest'
       });
@@ -175,7 +175,7 @@ export const deleteContest = async (req, res) => {
     }
 
     // Check if user is the creator
-    if (contest.createdBy.toString() !== req.user._id.toString()) {
+    if (contest.createdBy._id.toString() !== req.user.userId.toString()) {
       return res.status(StatusCodes.FORBIDDEN).json({
         message: 'Not authorized to delete this contest'
       });
@@ -188,7 +188,7 @@ export const deleteContest = async (req, res) => {
       });
     }
 
-    await contest.remove();
+    await Contest.findByIdAndDelete(req.params.id).exec();
 
     res.status(StatusCodes.OK).json({
       message: 'Contest deleted successfully'

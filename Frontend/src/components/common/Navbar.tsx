@@ -47,10 +47,10 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand Logo */}
         <Link to="/" className="text-xl text-white flex items-center gap-2 font-bold">
-          <div className="bg-blue-500 p-2 rounded-2xl">
-            <FaCode className="w-6 h-6 text-yellow-400" />
+          <div className=" bg-gradient-to-r from-indigo-600 to-purple-600 p-2 rounded-2xl">
+            <FaCode className="w-6 h-6 text-white" />
           </div>
-          Code<span className="text-yellow-400">Arena</span>
+          Code<span className="text-indigo-500">Arena</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -125,7 +125,7 @@ const Navbar = () => {
               <li>
                 <Link
                   to="/signup"
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-gray-100 shadow-md hover:bg-blue-700 transition-all"
+                  className="rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 px-4 py-2 text-sm font-semibold text-gray-100 shadow-md hover:bg-blue-700 transition-all"
                 >
                   Sign Up
                 </Link>

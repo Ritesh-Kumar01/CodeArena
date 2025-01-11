@@ -122,10 +122,159 @@ export const executeCode = async (req, res) => {
   } finally {
     try {
       // Clean up the temporary file
-      // fs.unlinkSync(filePath);
+      fs.unlinkSync(filePath);
       console.log(`Cleaned up file: ${filePath}`);
     } catch (cleanupError) {
       console.error('Error during cleanup:', cleanupError);
     }
+  }
+};
+
+
+
+
+
+// Backend: Add to submissions.controller.js
+
+const executeTestCases = async (code, language, testCases) => {
+  const results = [];
+  let totalExecutionTime = 0;
+  let maxMemoryUsage = 0;
+
+  // Function to sanitize code output
+  const sanitizeOutput = (output) => {
+    return output.toString().trim().replace(/\r\n/g, '\n');
+  };
+
+  try {
+    for (const testCase of testCases) {
+      const startTime = process.hrtime();
+      const startMemory = process.memoryUsage().heapUsed;
+
+      // Prepare the code execution payload
+      const executionPayload = {
+        code,
+        language,
+        input: testCase.input,
+      };
+
+      // Execute code using your existing execution endpoint
+      const response = await axios.post(
+        'http://localhost:5000/api/code/execute',
+        executionPayload
+      );
+
+      const endTime = process.hrtime(startTime);
+      const endMemory = process.memoryUsage().heapUsed;
+
+      // Calculate metrics
+      const executionTime = endTime[0] * 1000 + endTime[1] / 1000000; // Convert to milliseconds
+      const memoryUsed = endMemory - startMemory;
+
+      // Update total metrics
+      totalExecutionTime += executionTime;
+      maxMemoryUsage = Math.max(maxMemoryUsage, memoryUsed);
+
+      // Compare output with expected output
+      const actualOutput = sanitizeOutput(response.data.output);
+      const expectedOutput = sanitizeOutput(testCase.output);
+      const passed = actualOutput === expectedOutput;
+
+      results.push({
+        passed,
+        executionTime,
+        memory: memoryUsed,
+        input: testCase.input,
+        expectedOutput: testCase.output,
+        actualOutput: response.data.output,
+        error: response.data.error || null,
+        isHidden: testCase.isHidden || false
+      });
+
+      // If there's an error, break the execution
+      if (response.data.error) {
+        break;
+      }
+    }
+
+    return {
+      success: true,
+      results,
+      metrics: {
+        totalExecutionTime,
+        maxMemoryUsage
+      }
+    };
+
+  } catch (error) {
+    console.error('Test case execution error:', error);
+    return {
+      success: false,
+      error: error.message || 'Error executing test cases',
+      results
+    };
+  }
+};
+
+// Updated submitCode function in submissions.controller.js
+const submitCode = async (req, res) => {
+  try {
+    const { code, language, problemId } = req.body;
+    const userId = req.user.id;
+
+    // Verify the problem exists
+    const problem = await Problem.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ error: 'Problem not found' });
+    }
+
+    // Execute test cases
+    const executionResults = await executeTestCases(code, language, problem.testCases);
+
+    if (!executionResults.success) {
+      return res.status(400).json({
+        error: 'Test case execution failed',
+        details: executionResults.error
+      });
+    }
+
+    // Calculate submission status
+    const allTestsPassed = executionResults.results.every(result => result.passed);
+    const status = allTestsPassed ? 'accepted' : 'wrong_answer';
+
+    // Create submission record
+    const submission = new Submission({
+      userId,
+      problemId,
+      code,
+      language,
+      status,
+      executionTime: executionResults.metrics.totalExecutionTime,
+      memory: executionResults.metrics.maxMemoryUsage
+    });
+
+    await submission.save();
+
+    // Filter out hidden test case details from response
+    const visibleResults = executionResults.results.map(result => ({
+      ...result,
+      input: result.isHidden ? 'Hidden' : result.input,
+      expectedOutput: result.isHidden ? 'Hidden' : result.expectedOutput,
+      actualOutput: result.isHidden ? 'Hidden' : result.actualOutput,
+      passed: result.passed
+    }));
+
+    res.status(201).json({
+      message: 'Submission processed successfully',
+      submissionId: submission._id,
+      status,
+      results: visibleResults,
+      metrics: executionResults.metrics,
+      allTestsPassed
+    });
+
+  } catch (error) {
+    console.error('Submission error:', error);
+    res.status(500).json({ error: 'Error processing submission' });
   }
 };

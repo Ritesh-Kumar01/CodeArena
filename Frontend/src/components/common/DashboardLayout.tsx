@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaBars, FaTachometerAlt, FaUserCircle, FaTrophy } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { BsFillQuestionSquareFill } from "react-icons/bs";
+import { ImProfile } from "react-icons/im";
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
@@ -90,7 +92,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                                     to="/profile"
                                     className="flex items-center gap-4 rounded-lg px-4 py-3 text-md font-medium text-gray-100 hover:bg-gray-800"
                                 >
-                                    <FaTachometerAlt size={20} />
+                                    <ImProfile size={20} />
                                     {isSidebarOpen && <span>Profile</span>}
                                 </Link>
                             </li>
@@ -99,7 +101,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                                     to="/problems"
                                     className="flex items-center gap-4 rounded-lg px-4 py-3 text-md font-medium text-gray-100 hover:bg-gray-800"
                                 >
-                                    <FaTachometerAlt size={20} />
+                                    <BsFillQuestionSquareFill size={20} />
                                     {isSidebarOpen && <span>Problems</span>}
                                 </Link>
                             </li>

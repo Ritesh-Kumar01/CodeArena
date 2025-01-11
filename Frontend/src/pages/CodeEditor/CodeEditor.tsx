@@ -15,6 +15,50 @@ const CodeEditor: React.FC = () => {
   const [executionError, setExecutionError] = useState<string | null>(null); // Error message for execution
   const [executionOutput, setExecutionOutput] = useState<string | null>(null); // Output after execution
 
+
+  const [submissionStatus, setSubmissionStatus] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!problem || !code) return;
+
+    setIsSubmitting(true);
+    setSubmissionStatus(null);
+    setExecutionError(null);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:5000/api/code/submit",
+        {
+          code,
+          language,
+          problemId: id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (response.data.status === 'accepted') {
+        setSubmissionStatus('success');
+        setExecutionOutput('All test cases passed! Solution submitted successfully.');
+      } else {
+        setSubmissionStatus('error');
+        setExecutionError('Some test cases failed. Please check your solution.');
+      }
+
+    } catch (error) {
+      setSubmissionStatus('error');
+      setExecutionError(
+        error?.response?.data?.error || 'Error submitting code. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
   // Fetch problem details from backend
   useEffect(() => {
     const fetchProblem = async () => {
@@ -72,10 +116,6 @@ const CodeEditor: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    alert("Submitting code...");
-  };
-
   if (!problem) return <div>Loading...</div>;
 
   return (
@@ -125,12 +165,22 @@ const CodeEditor: React.FC = () => {
         >
           {isRunning ? "Running..." : "Run"}
         </button>
+        
+
         <button
-          onClick={handleSubmit}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-        >
-          Submit
-        </button>
+    onClick={handleSubmit}
+    className={`px-4 py-2 ${
+      isSubmitting 
+        ? 'bg-gray-600' 
+        : submissionStatus === 'success'
+        ? 'bg-green-600 hover:bg-green-700'
+        : 'bg-blue-600 hover:bg-blue-700'
+    } text-white rounded transition-colors`}
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? "Submitting..." : "Submit"}
+  </button>
+
       </div>
     </div>
 
@@ -180,5 +230,7 @@ const CodeEditor: React.FC = () => {
 
   );
 };
+
+
 
 export default CodeEditor;

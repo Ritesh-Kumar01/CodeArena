@@ -18,6 +18,8 @@ import AdminDashboard from './pages/Admin/Dashboard';
 import UserForm from './pages/Admin/Users/userform';
 import Alluser from './pages/Admin/Users/AllUser';
 import CreateContest from './pages/Contests/CreateContest';
+import ContestDetail from './pages/Contests/ContestDetail';
+import EditContestDetail from './pages/Contests/EditContestDetail';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -26,6 +28,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/dashboard" element={<Dashboard />} />
         
         <Route path="/contests" element={<Contests />} />
+        <Route path="/contests/:id" element={<ContestDetail />} />
+        <Route path="/contests/edit/:id" element={<EditContestDetail />} />
+        {/* <Route path="/contests/delete/:id" element={<DeleteContestDetail />} /> */}
         <Route path="/create-contest" element={<CreateContest />} />
 
 
