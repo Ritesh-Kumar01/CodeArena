@@ -124,3 +124,36 @@ DOCKER_HOST=your_docker_host
 ---
 
 Built with ❤️ by CODING_LINUX
+
+# Developers
+
+<table>
+  <tr align="center">
+    <td>
+      <a href="https://github.com/enrituraj">
+        <img src="https://github.com/enrituraj.png?size=100" alt="Ritu Raj" width="100">
+        <br><b>Ritu Raj</b>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/Ritesh-Kumar01">
+        <img src="https://github.com/Ritesh-Kumar01.png?size=100" alt="Ritesh Kumar" width="100">
+        <br><b>Ritesh Kumar</b>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/vishal-1104">
+        <img src="https://github.com/vishal-1104.png?size=100" alt="Vishal" width="100">
+        <br><b>Vishal Kumar</b>
+      </a>
+    </td>
+    <td>
+      <a href="https://github.com/yojeshkr0112">
+        <img src="https://github.com/yojeshkr0112.png?size=100" alt="Yojesh Kumar" width="100">
+        <br><b>Yojesh Kumar</b>
+      </a>
+    </td>
+  </tr>
+</table>
+
+---
