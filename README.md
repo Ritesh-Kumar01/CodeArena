@@ -2,16 +2,12 @@
 
 A real-time competitive coding platform that transforms coding contests into an engaging, interactive experience. CodeArena provides a secure, scalable environment for hosting coding competitions with live evaluation, instant feedback, and real-time leaderboards.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0.0-green.svg)
-
 ## 🌟 Features
 
 - **Real-time Code Execution**: Secure sandbox environment supporting multiple programming languages
 - **Live Leaderboard**: Dynamic rankings updated in real-time using WebSocket
 - **Interactive IDE**: Feature-rich code editor with syntax highlighting and auto-completion
 - **Advanced Analytics**: Performance tracking and submission analytics
-- **Plagiarism Detection**: Built-in system to maintain contest integrity
 - **Contest Management**: Comprehensive tools for creating and managing coding competitions
 
 ## 🚀 Tech Stack
@@ -22,6 +18,64 @@ A real-time competitive coding platform that transforms coding contests into an 
 - **Real-time**: Socket.io
 - **Code Execution**: Docker
 - **Authentication**: JWT
+
+## 🖼️ Screenshots
+
+### #. Database Diagram
+![ER Diagram](https://i.ibb.co/Y2h0DfY/digram.png)
+
+### 1. Landing Page
+![Landing Page](https://i.ibb.co/6RCGpXw/01.png)
+
+### 2. User Authentication
+![User Authentication](https://i.ibb.co/VqbnJSP/02.png)
+
+### 3. Dashboard
+![Dashboard](https://i.ibb.co/fnCwyhC/03.png)
+
+### 4. Create a Problem Page
+![Create a Problem Page](https://i.ibb.co/SnmqCvg/04.png)
+
+### 5. Problem List
+![Problem List](https://i.ibb.co/1TZ9rq6/05.png)
+
+### 6. Problem Details
+![Problem Details](https://i.ibb.co/s2py8D8/06.png)
+
+### 7. Code Editor
+![Code Editor](https://i.ibb.co/qg22FQp/07.png)
+
+### 8. Contest Creation
+![Contest Creation](https://i.ibb.co/QXG2jrv/08.png)
+
+### 9. Contest List
+![Contest List](https://i.ibb.co/5rs73Ws/09.png)
+
+### 10. Contest Details
+![Contest Details](https://i.ibb.co/Lt0q3mn/10.png)
+
+### 11. Live Contest View
+![Live Contest View](https://i.ibb.co/ZK1L7MH/11.png)
+
+### 12. Submit Solution
+![Submit Solution](https://i.ibb.co/DpCQsV2/12.png)
+
+### 13. Solution Results
+![Solution Results](https://i.ibb.co/RCT8yFT/13.png)
+
+### 14. Leaderboard
+![Leaderboard](https://i.ibb.co/ZTxzkPT/15.png)
+
+### 15. User Profile
+![User Profile](https://i.ibb.co/CsZ5r0D/16.png)
+
+### 16. Settings Page
+![Settings Page](https://i.ibb.co/p01KDFW/17.png)
+
+### 17. Logout Confirmation
+![Logout Confirmation](https://i.ibb.co/ZLn4McV/18.png)
+
+
 
 ## 🛠️ Installation
 
@@ -58,22 +112,6 @@ JWT_SECRET=your_jwt_secret
 DOCKER_HOST=your_docker_host
 ```
 
-## 📖 Documentation
-
-Detailed documentation is available in the `/docs` directory:
-- API Documentation
-- Setup Guide
-- User Manual
-- Contributing Guidelines
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🔮 Future Roadmap
 
 - AI-powered code suggestions
@@ -82,8 +120,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Integration with GitHub/GitLab
 - Support for more programming languages
 
-## 📞 Contact
-
-For questions or feedback, please open an issue or contact the maintainers.
 
 ---
+
+Built with ❤️ by CODING_LINUX
