@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams,Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { 
   FaCalendarAlt, 
@@ -94,6 +94,8 @@ const ContestDetail = () => {
         const response = await axios.get(`http://localhost:5000/api/contests/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+
+        
         setContest(response.data);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch contest details");
@@ -119,6 +121,7 @@ const ContestDetail = () => {
       const response = await axios.get(`http://localhost:5000/api/contests/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      
       setContest(response.data);
 
     } catch (err) {
@@ -266,13 +269,14 @@ const ContestDetail = () => {
             ) : (
               <div className="space-y-2">
                 {contest.problems?.map((problem, index) => (
-                  <div
-                    key={problem._id}
+                  <Link
+                    to={`/editor/${problem.toString()}`}
+                    key={problem}
                     className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg hover:bg-gray-700/70 transition-colors cursor-pointer"
                   >
                     <span className="text-white">Problem {index + 1}</span>
-                    <span className="text-gray-400">{problem.points} points</span>
-                  </div>
+                    <span className="text-gray-400">5 points</span>
+                  </Link>
                 ))}
               </div>
             )}

@@ -254,7 +254,7 @@ export const getContestProblems = async (req, res) => {
 
     // Only show problems if contest has started or user is creator
     const now = new Date();
-    const isCreator = contest.createdBy.toString() === req.user._id.toString();
+    const isCreator = contest.createdBy.toString() === req.user.userId.toString();
     
     if (!isCreator && new Date(contest.startTime) > now) {
       return res.status(StatusCodes.FORBIDDEN).json({

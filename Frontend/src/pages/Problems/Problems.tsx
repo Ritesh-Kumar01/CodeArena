@@ -137,7 +137,7 @@ const Problems: React.FC = () => {
                   </div>
                   
                   <p className="text-sm text-gray-400 mb-4">
-                    Created by: {problem.createdBy.fullname}
+                    Created at: {problem.createdBy.fullname}
                   </p>
 
                   {/* Action Buttons */}

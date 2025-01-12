@@ -1,9 +1,15 @@
+import Problem from "../../models/problem.model.js";
+import Submission from "../../models/submission.model.js";
+import axios from 'axios';
+ 
+
 import { exec } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { log } from 'console';
 
 const execPromise = util.promisify(exec);
 
@@ -16,10 +22,6 @@ if (!fs.existsSync(CODE_DIR)) {
 }
 
 const LANGUAGE_CONFIG = {
-  javascript: {
-    extension: 'js',
-    command: (filePath) => `docker run --rm -v ${filePath}:/app/code.js node:14 node /app/code.js`
-  },
   python: {
     extension: 'py',
     command: (filePath) => `docker run --rm -v ${filePath}:/app/code.py python:3.9 sh -c "python /app/code.py 2>&1"`
@@ -33,54 +35,6 @@ const LANGUAGE_CONFIG = {
     command: (filePath) => `docker run --rm -v ${filePath}:/app/code.cpp gcc:latest sh -c "g++ /app/code.cpp -o /app/code && /app/code"`
   },
 };
-
-// export const executeCode = async (req, res) => {
-//   const { code, language, input } = req.body;
-//   console.log(req.body);
-
-//   if (!code || !language) {
-//     return res.status(400).json({ error: 'Code and language are required' });
-//   }
-
-//   const config = LANGUAGE_CONFIG[language];
-//   if (!config) {
-//     return res.status(400).json({ error: 'Unsupported language' });
-//   }
-
-//   const fileName = `code-${Date.now()}.${config.extension}`;
-//   const filePath = path.join(CODE_DIR, fileName);
-
-//   try {
-//     // Write code to file
-//     fs.writeFileSync(filePath, code);
-//     console.log(`Code file created at: ${filePath}`);
-//     console.log(`Running command: ${config.command(filePath)}`);
-
-//     // Execute code inside Docker container
-//     const { stdout, stderr } = await execPromise(config.command(filePath));
-//     console.log('stdout:', stdout);
-//     console.log('stderr:', stderr);
-
-//     // Check if there was any error
-//     if (stderr) {
-//       return res.status(200).json({ error: stderr });
-//     }
-
-//     res.json({ output: stdout });
-//   } catch (error) {
-//     console.error('Execution error:', error);
-//     res.status(500).json({ error: 'Failed to execute code', details: error.message });
-//   } finally {
-//     // Clean up the temporary file
-//     try {
-//       fs.unlinkSync(filePath);
-//       console.log(`Cleaned up file: ${filePath}`);
-//     } catch (cleanupError) {
-//       console.error('Error during cleanup:', cleanupError);
-//     }
-//   }
-// };
-
 
 
 export const executeCode = async (req, res) => {
@@ -217,10 +171,15 @@ const executeTestCases = async (code, language, testCases) => {
 };
 
 // Updated submitCode function in submissions.controller.js
-const submitCode = async (req, res) => {
+export const submitCode = async (req, res) => {
   try {
     const { code, language, problemId } = req.body;
-    const userId = req.user.id;
+    console.log('Received request:', req.body);
+    
+    const userId = req.user.userId;
+    console.log(userId);
+    
+
 
     // Verify the problem exists
     const problem = await Problem.findById(problemId);

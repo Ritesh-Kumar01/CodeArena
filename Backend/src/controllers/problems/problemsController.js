@@ -71,7 +71,7 @@ export const deleteProblem = async (req, res) => {
 // Get all problems
 export const getAllProblems = async (req, res) => {
   try {
-    const problems = await Problem.find().populate('createdBy', 'name email');
+    const problems = await Problem.find().populate('createdBy', 'fullname email');
     res.status(200).json(problems);
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch problems' });
@@ -82,7 +82,7 @@ export const getAllProblems = async (req, res) => {
 export const getProblemById = async (req, res) => {
   try {
     const { id } = req.params;
-    const problem = await Problem.findById(id).populate('createdBy', 'name email');
+    const problem = await Problem.findById(id).populate('createdBy', 'fullname email');
 
     if (!problem) {
       return res.status(404).json({ error: 'Problem not found' });

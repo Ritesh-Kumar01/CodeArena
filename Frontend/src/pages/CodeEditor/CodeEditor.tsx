@@ -8,7 +8,7 @@ import DashboardLayout from "../../components/common/DashboardLayout";
 
 const CodeEditor: React.FC = () => {
   const { id } = useParams(); // Get problem ID from URL
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] = useState("c");
   const [code, setCode] = useState("");
   const [problem, setProblem] = useState<any>(null);
   const [isRunning, setIsRunning] = useState(false); // Track if code is running
@@ -151,11 +151,9 @@ const CodeEditor: React.FC = () => {
         onChange={(e) => setLanguage(e.target.value)}
         className="p-2 rounded border border-gray-700 bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        <option value="javascript">JavaScript</option>
-        <option value="python">Python</option>
-        <option value="java">Java</option>
         <option value="c">C</option>
         <option value="cpp">C++</option>
+        <option value="python">Python</option>
       </select>
       <div className="space-x-4">
         <button

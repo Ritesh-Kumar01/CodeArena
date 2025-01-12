@@ -20,6 +20,8 @@ import Alluser from './pages/Admin/Users/AllUser';
 import CreateContest from './pages/Contests/CreateContest';
 import ContestDetail from './pages/Contests/ContestDetail';
 import EditContestDetail from './pages/Contests/EditContestDetail';
+import { AllSubmissions, MySubmissions, RecentSubmissions } from './pages/Submission/AllSubmissions';
+
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -32,6 +34,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/contests/edit/:id" element={<EditContestDetail />} />
         {/* <Route path="/contests/delete/:id" element={<DeleteContestDetail />} /> */}
         <Route path="/create-contest" element={<CreateContest />} />
+
+        <Route path="/submissions/all" element={<AllSubmissions />} />
+        <Route path="/submissions/my-submissions" element={<MySubmissions />} />
+        <Route path="/submissions/recent" element={<RecentSubmissions />} />
 
 
         <Route path="/signup" element={<Signup />} />

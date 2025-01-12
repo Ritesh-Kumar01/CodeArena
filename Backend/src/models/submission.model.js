@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const submissionSchema = new mongoose.Schema({
+const { Schema } = mongoose;
+
+const submissionSchema = new Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -38,5 +40,4 @@ const submissionSchema = new mongoose.Schema({
   }
 });
 
-const Submission = mongoose.model('Submission', submissionSchema);
-module.exports = Submission;
+export default mongoose.model('Submission', submissionSchema);

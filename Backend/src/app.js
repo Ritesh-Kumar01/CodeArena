@@ -6,6 +6,7 @@ import userRouter from './routes/user/userRoutes.js';
 import problemRouter from './routes/problems/problemsRoute.js';
 import codeRouter from './routes/code_execute/code_execute.js';
 import contestRouter from './routes/contests/contestRouter.js';
+import submissionRoutes from './routes/code_execute/submissionRouter.js';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/api/user', userRouter);
 app.use('/api/problems', problemRouter); 
 app.use('/api/code', codeRouter); 
 app.use('/api/contests', contestRouter); 
+app.use('/api/submissions', submissionRoutes);
 
 // Test route
 app.get('/', (req, res) => {
