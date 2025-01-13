@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/common/Navbar";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FormData {
   fullname: string;
@@ -59,6 +61,16 @@ const Signup: React.FC = () => {
     }
 
     setErrors(newErrors);
+    
+    // Show validation errors as toasts
+    if (!valid) {
+      Object.values(newErrors).forEach((error) => {
+        if (error) {
+          toast.error(error);
+        }
+      });
+    }
+    
     return valid;
   };
 
@@ -66,11 +78,19 @@ const Signup: React.FC = () => {
     e.preventDefault();
 
     if (validateForm()) {
+      // Show loading toast
+      const toastId = toast.loading("Registering user...");
+      
       try {
         const response = await axios.post("http://localhost:5000/api/user/register", formData);
-        console.log(response.data); // Handle the response as needed
-
-        alert(`Welcome, ${formData.fullname}! You have successfully registered.`);
+        
+        // Update loading toast to success
+        toast.update(toastId, {
+          render: `Welcome, ${formData.fullname}! You have successfully registered.`,
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
 
         // Reset form fields
         setFormData({
@@ -79,20 +99,40 @@ const Signup: React.FC = () => {
           password: "",
         });
 
-        navigate("/signin"); 
+        // Navigate after a short delay to allow the user to see the success message
+        setTimeout(() => {
+          navigate("/signin");
+        }, 2000);
 
-      } catch (error) {
-        console.error("There was an error registering the user!", error);
-        alert("Registration failed. Please try again.");
+      } catch (error: any) {
+        // Update loading toast to error
+        toast.update(toastId, {
+          render: error.response?.data?.message || "Registration failed. Please try again.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
       }
     }
   };
 
   return (
     <div className="h-screen bg-white flex items-center justify-center">
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick={true}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <Navbar/>
       <div className="w-full xl:mx-auto max-w-8xl flex h-full shadow-xl overflow-hidden">
-        {/* Left Section */}
+        {/* Left Section - Remains unchanged */}
         <div className="hidden lg:flex lg:w-3/5 relative overflow-hidden bg-gradient-to-br from-purple-950 via-slate-950 to-indigo-950">
           <div className="absolute inset-0 bg-opacity-40"></div>
           <div
@@ -152,6 +192,8 @@ const Signup: React.FC = () => {
           </div>
         </div>
 
+        
+
         {/* Right Section */}
         <div className="w-full lg:w-2/5 bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-10">
           <div className="w-full max-w-sm space-y-4 mt-10 bg-white/10 p-8 rounded-xl text-center">
@@ -179,11 +221,6 @@ const Signup: React.FC = () => {
                   className="w-full mt-2 p-3 font-semibold rounded-lg bg-white/10 text-white placeholder-gray-100/80 focus:outline-none focus:ring-2 focus:ring-violet-500"
                   placeholder="Enter your Fullname"
                 />
-                {errors.fullname && (
-                  <p className="bg-red-500 text-white px-2 py-1 font-semibold text-sm">
-                    {errors.fullname}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -202,11 +239,6 @@ const Signup: React.FC = () => {
                   className="w-full mt-2 p-3 font-semibold rounded-lg bg-white/10 text-white placeholder-gray-100/80 focus:outline-none focus:ring-2 focus:ring-violet-500"
                   placeholder="Enter your email"
                 />
-                {errors.email && (
-                  <p className="bg-red-500 text-white px-2 py-1 font-semibold text-sm">
-                    {errors.email}
-                  </p>
-                )}
               </div>
               <div>
                 <label
@@ -225,11 +257,6 @@ const Signup: React.FC = () => {
                   className="w-full mt-2 p-3 rounded-lg bg-white/10 text-white font-semibold placeholder-gray-100/80 focus:outline-none focus:ring-2 focus:ring-violet-500"
                   placeholder="Enter your password"
                 />
-                {errors.password && (
-                  <p className="bg-red-500 text-white px-2 py-1 font-semibold text-sm">
-                    {errors.password}
-                  </p>
-                )}
               </div>
               <button
                 type="submit"
