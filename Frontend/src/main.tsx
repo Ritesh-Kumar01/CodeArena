@@ -21,6 +21,11 @@ import CreateContest from './pages/Contests/CreateContest';
 import ContestDetail from './pages/Contests/ContestDetail';
 import EditContestDetail from './pages/Contests/EditContestDetail';
 import { AllSubmissions, MySubmissions, RecentSubmissions } from './pages/Submission/AllSubmissions';
+import ContestParticipation from './pages/Participants/ContestParticipation';
+import UpcomingContests from './pages/Contests/contests/UpcomingContests';
+import OngoingContests from './pages/Contests/contests/OngoingContests';
+import PastContests from './pages/Contests/contests/PastContests';
+
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -29,6 +34,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route path="/dashboard" element={<Dashboard />} />
         
+        <Route path="/contests/my-registrations" element={<ContestParticipation />} />
+
+        <Route path="/contests/upcoming" element={<UpcomingContests />} />
+        <Route path="/contests/ongoing" element={<OngoingContests />} />
+        <Route path="/contests/past" element={<PastContests />} />
+
         <Route path="/contests" element={<Contests />} />
         <Route path="/contests/:id" element={<ContestDetail />} />
         <Route path="/contests/edit/:id" element={<EditContestDetail />} />

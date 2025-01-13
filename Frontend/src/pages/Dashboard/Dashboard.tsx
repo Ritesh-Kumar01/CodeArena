@@ -8,6 +8,7 @@ import {
   FaCalendarTimes ,
   FaCheckCircle,
   FaClock,
+  FaQuestionCircle,
   FaExclamationCircle,
   FaChartBar
 } from 'react-icons/fa';
@@ -198,7 +199,40 @@ const Dashboard = () => {
             <p className="text-gray-400 text-sm">Problems Solved</p>
           </div>
 
-          {/* Other stat cards remain the same */}
+          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-blue-500/10 p-3 rounded-lg">
+                <FaTrophy className="w-6 h-6 text-blue-500" />
+              </div>
+              <span className="text-xs text-gray-400">Current</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-1">1,234</h3>
+            <p className="text-gray-400 text-sm">Global Rank</p>
+          </div>
+          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-purple-500/10 p-3 rounded-lg">
+                <FaChartLine className="w-6 h-6 text-purple-500" />
+              </div>
+              <span className="text-xs text-gray-400">This month</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-1">89%</h3>
+            <p className="text-gray-400 text-sm">Success Rate</p>
+          </div>
+          <div className="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-yellow-500/10 p-3 rounded-lg">
+                <FaQuestionCircle className="w-6 h-6 text-yellow-500" />
+              </div>
+
+              <span className="text-xs text-gray-400">Total</span>
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-1">15</h3>
+            <p className="text-gray-400 text-sm">Total Questions</p>
+          </div>
+
+
+
         </div>
 
         {/* Activity Chart */}

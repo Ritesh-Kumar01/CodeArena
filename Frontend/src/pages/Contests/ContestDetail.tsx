@@ -197,7 +197,7 @@ const ContestDetail = () => {
         {/* Contest Header */}
         <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 mb-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div>
+            <div className="w-[70%]">
               <h1 className="text-3xl font-bold text-white mb-2">{contest.title}</h1>
               <p className="text-gray-300">{contest.description}</p>
             </div>

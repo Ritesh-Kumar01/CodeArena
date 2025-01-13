@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaListAlt,FaCalendarAlt,FaChartLine,FaUserFriends} from 'react-icons/fa';
 import { FaCode, FaHistory, FaUserClock, FaCheckCircle } from 'react-icons/fa';
 import { FaBars, FaTachometerAlt, FaUserCircle, FaTrophy } from 'react-icons/fa';
 import { Link, useNavigate } from "react-router-dom";
@@ -108,45 +109,91 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             </li>
 
                             <li>
-                                <details className="group [&_summary::-webkit-details-marker]:hidden">
-                                    <summary
-                                        className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-gray-100 hover:bg-gray-800"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <FaTrophy size={20} />
-                                            {isSidebarOpen && <span className="text-md font-medium">Contests</span>}
-                                        </div>
+  <details className="group [&_summary::-webkit-details-marker]:hidden">
+    <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-3 text-gray-100 hover:bg-gray-800">
+      <div className="flex items-center gap-4">
+        <FaTrophy size={20} />
+        {isSidebarOpen && <span className="text-md font-medium">Contests</span>}
+      </div>
 
-                                        {isSidebarOpen && (
-                                            <span className="shrink-0 transition duration-300 group-open:-rotate-180">
-                                                <svg
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    className="size-5"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </span>
-                                        )}
-                                    </summary>
+      {isSidebarOpen && (
+        <span className="shrink-0 transition duration-300 group-open:-rotate-180">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="size-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </span>
+      )}
+    </summary>
 
-                                    <ul className="mt-2 space-y-1 px-4">
-                                        <li>
-                                            <Link
-                                                to="/contests"
-                                                className="block rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
-                                            >
-                                                All contests
-                                            </Link>
-                                        </li>
-                                    </ul>
-                                </details>
-                            </li>
+    <ul className="mt-2 space-y-1 px-4">
+      <li>
+        <Link
+          to="/contests"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaListAlt size={16} />
+          All Contests
+        </Link>
+      </li>
+      
+      <li>
+        <Link
+          to="/contests/upcoming"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaCalendarAlt size={16} />
+          Upcoming Contests
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/contests/ongoing"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaCalendarAlt size={16} />
+          Ongoing Contests
+        </Link>
+      </li>
+
+      <li>
+        <Link
+          to="/contests/past"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaHistory size={16} />
+          Past Contests
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/contests/rankings"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaChartLine size={16} />
+          Rankings
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="/contests/my-registrations"
+          className="flex items-center gap-3 rounded-lg px-4 py-3 text-md font-medium text-gray-300 hover:bg-gray-800 hover:text-gray-100"
+        >
+          <FaUserFriends size={16} />
+          My Registrations
+        </Link>
+      </li>
+    </ul>
+  </details>
+</li>
 
                             <li>
       <details className="group [&_summary::-webkit-details-marker]:hidden">

@@ -13,10 +13,8 @@ import { log } from 'console';
 
 const execPromise = util.promisify(exec);
 
-// Temporary directory for code files
 const CODE_DIR = path.join(dirname(fileURLToPath(import.meta.url)), '../temp_code');
 
-// Ensure the temp_code directory exists
 if (!fs.existsSync(CODE_DIR)) {
   fs.mkdirSync(CODE_DIR);
 }
@@ -54,16 +52,13 @@ export const executeCode = async (req, res) => {
   const filePath = path.join(CODE_DIR, fileName);
 
   try {
-    // Write code to file
     fs.writeFileSync(filePath, code);
     console.log(`Code written to: ${filePath}`);
 
-    // Execute code inside Docker container
     const { stdout, stderr } = await execPromise(config.command(filePath));
     console.log('stdout:', stdout);
     console.log('stderr:', stderr);
 
-    // Check if there was any error
     if (stderr) {
       console.error('Docker execution error:', stderr);
       return res.status(400).json({ error: stderr });
@@ -75,7 +70,6 @@ export const executeCode = async (req, res) => {
     res.status(500).json({ error: 'Failed to execute code', details: error.message });
   } finally {
     try {
-      // Clean up the temporary file
       fs.unlinkSync(filePath);
       console.log(`Cleaned up file: ${filePath}`);
     } catch (cleanupError) {
@@ -86,16 +80,11 @@ export const executeCode = async (req, res) => {
 
 
 
-
-
-// Backend: Add to submissions.controller.js
-
 const executeTestCases = async (code, language, testCases) => {
   const results = [];
   let totalExecutionTime = 0;
   let maxMemoryUsage = 0;
 
-  // Function to sanitize code output
   const sanitizeOutput = (output) => {
     return output.toString().trim().replace(/\r\n/g, '\n');
   };
@@ -105,14 +94,12 @@ const executeTestCases = async (code, language, testCases) => {
       const startTime = process.hrtime();
       const startMemory = process.memoryUsage().heapUsed;
 
-      // Prepare the code execution payload
       const executionPayload = {
         code,
         language,
         input: testCase.input,
       };
 
-      // Execute code using your existing execution endpoint
       const response = await axios.post(
         'http://localhost:5000/api/code/execute',
         executionPayload
@@ -121,15 +108,12 @@ const executeTestCases = async (code, language, testCases) => {
       const endTime = process.hrtime(startTime);
       const endMemory = process.memoryUsage().heapUsed;
 
-      // Calculate metrics
       const executionTime = endTime[0] * 1000 + endTime[1] / 1000000; // Convert to milliseconds
       const memoryUsed = endMemory - startMemory;
 
-      // Update total metrics
       totalExecutionTime += executionTime;
       maxMemoryUsage = Math.max(maxMemoryUsage, memoryUsed);
 
-      // Compare output with expected output
       const actualOutput = sanitizeOutput(response.data.output);
       const expectedOutput = sanitizeOutput(testCase.output);
       const passed = actualOutput === expectedOutput;
@@ -145,7 +129,6 @@ const executeTestCases = async (code, language, testCases) => {
         isHidden: testCase.isHidden || false
       });
 
-      // If there's an error, break the execution
       if (response.data.error) {
         break;
       }
@@ -170,7 +153,6 @@ const executeTestCases = async (code, language, testCases) => {
   }
 };
 
-// Updated submitCode function in submissions.controller.js
 export const submitCode = async (req, res) => {
   try {
     const { code, language, problemId } = req.body;
@@ -179,15 +161,11 @@ export const submitCode = async (req, res) => {
     const userId = req.user.userId;
     console.log(userId);
     
-
-
-    // Verify the problem exists
     const problem = await Problem.findById(problemId);
     if (!problem) {
       return res.status(404).json({ error: 'Problem not found' });
     }
 
-    // Execute test cases
     const executionResults = await executeTestCases(code, language, problem.testCases);
 
     if (!executionResults.success) {
@@ -197,11 +175,9 @@ export const submitCode = async (req, res) => {
       });
     }
 
-    // Calculate submission status
     const allTestsPassed = executionResults.results.every(result => result.passed);
     const status = allTestsPassed ? 'accepted' : 'wrong_answer';
 
-    // Create submission record
     const submission = new Submission({
       userId,
       problemId,
@@ -214,7 +190,6 @@ export const submitCode = async (req, res) => {
 
     await submission.save();
 
-    // Filter out hidden test case details from response
     const visibleResults = executionResults.results.map(result => ({
       ...result,
       input: result.isHidden ? 'Hidden' : result.input,
